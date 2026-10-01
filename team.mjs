@@ -26,7 +26,9 @@ export function createTeamUi({backend,supabase,getProfile,escape,toast,render,di
  if(a.permissions){for(const [key,label] of Object.entries(permissionLabels)){const before=b.role==='admin'||!!b.permissions?.[key],after=a.role==='admin'||!!a.permissions[key];if(!e.before_data||before!==after)rows.push(`<li><span>${label}</span><strong>${e.before_data?(before?'Oui':'Non')+' → ':''}${after?'Oui':'Non'}</strong></li>`);}}
  const readable=v=>typeof v==='boolean'?(v?'Oui':'Non'):(roleLabels[v]??v);
  for(const [key,label] of [['display_name','Nom'],['email','Adresse e-mail'],['role','Profil'],['active','Accès actif']])if(key in a&&(!e.before_data||JSON.stringify(a[key])!==JSON.stringify(b[key])))rows.push(`<li><span>${label}</span><strong>${e.before_data?safe(readable(b[key]))+' → ':''}${safe(readable(a[key]))}</strong></li>`);
- if(a.ready_change)rows.push(`<li><span>Kits prêts</span><strong>${a.ready_change>0?'+':''}${a.ready_change}</strong></li>`);
+ if(a.swap_quantity)rows.push(`<li><span>Échange de cahiers depuis ${safe(kitById(a.swap_from)?.name||a.swap_from)}</span><strong>${a.swap_quantity} kit(s)</strong></li>`);
+ if(Object.keys(a.ready_changes||{}).length){for(const [id,delta] of Object.entries(a.ready_changes))rows.push(`<li><span>Kits préparés · ${safe(kitById(id)?.name||id)}</span><strong>${delta>0?'+':''}${delta}</strong></li>`);}
+ else if(a.ready_change)rows.push(`<li><span>Kits prêts</span><strong>${a.ready_change>0?'+':''}${a.ready_change}</strong></li>`);
  for(const [id,delta] of Object.entries(a.raw_changes||{}))rows.push(`<li><span>${safe(articleById(id)?.name||id)}</span><strong>${delta>0?'+':''}${delta}</strong></li>`);
  if(a.note)rows.push(`<li><span>Note</span><strong>${safe(a.note)}</strong></li>`);
  if(a.cancelled_sale_id)rows.push(`<li><span>Vente annulée</span><strong>${safe(a.cancelled_sale_id)}</strong></li>`);
